@@ -45,6 +45,170 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #b9d8ee}
 .primary{background:#dff3ff!important}
 .hint{position:absolute;bottom:132px;left:50%;transform:translateX(-50%);z-index:8;background:#fff;border:1px solid #c8dfef;border-radius:18px;padding:8px 13px;font-size:11px;box-shadow:0 5px 16px #54738c22;white-space:nowrap;display:none}
 
+
+.guideMask{position:absolute;inset:0;z-index:24;pointer-events:none;display:none}
+.guideText{position:absolute;left:50%;bottom:142px;transform:translateX(-50%);width:min(88%,360px);background:#fff;border:2px solid #9bc9ea;border-radius:18px;padding:12px 14px;text-align:center;font-size:13px;line-height:1.45;box-shadow:0 8px 26px #26435d33}
+.guideArrow{display:block;font-size:20px;margin-top:4px;animation:bob .8s infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(5px)}}
+nav.guide-feed button:nth-child(1),
+nav.guide-play button:nth-child(2),
+nav.guide-sync button:nth-child(3){
+  outline:4px solid #ffd76a;
+  box-shadow:0 0 0 7px #fff7c999,0 4px 0 #b9d8ee;
+  transform:translateY(-3px);
+}
+.sheet.guide-choice{outline:4px solid #ffd76a}
+
+
+/* v0.4 visual polish */
+#world:before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 18% 18%,#ffffffaa 0 4px,transparent 5px),
+    radial-gradient(circle at 78% 26%,#ffffff88 0 3px,transparent 4px),
+    radial-gradient(circle at 65% 68%,#ffffff99 0 4px,transparent 5px);
+  background-size:120px 120px,160px 160px,190px 190px;
+  animation:driftBg 18s linear infinite;
+  pointer-events:none;
+}
+@keyframes driftBg{from{transform:translateY(0)}to{transform:translateY(80px)}}
+
+#bit{
+  width:132px;height:132px;
+  transition:left 2.4s cubic-bezier(.42,0,.2,1),top 2s cubic-bezier(.42,0,.2,1);
+  animation:idleFloat 2.4s ease-in-out infinite;
+  transform-origin:center bottom;
+}
+@keyframes idleFloat{
+  0%,100%{transform:translate(-50%,-50%) translateY(0) rotate(-1deg)}
+  50%{transform:translate(-50%,-50%) translateY(-7px) rotate(1deg)}
+}
+
+.coreGlow{
+  position:absolute;inset:17px;
+  border-radius:48%;
+  background:radial-gradient(circle at 45% 35%,#ffffffcc,transparent 38%);
+  pointer-events:none;
+}
+.body{
+  inset:18px 15px 18px 15px;
+  background:linear-gradient(160deg,#d8f4ff 0%,#a9e1ff 55%,#8dcff8 100%);
+  border:4px solid #45637c;
+  border-radius:50% 50% 45% 45%;
+  box-shadow:
+    inset 0 7px #ffffff99,
+    inset 0 -12px #7ec8f2,
+    0 10px 20px #668fa72b;
+}
+.cheek{
+  position:absolute;top:68px;width:18px;height:9px;border-radius:50%;
+  background:#ffb9c9aa;
+  filter:blur(.2px);
+}
+.cheek.l{left:28px}.cheek.r{right:28px}
+.eye{
+  top:54px;width:11px;height:16px;background:#26334a;border-radius:50%;
+  transform-origin:center;
+  animation:blink 5s infinite;
+}
+.eye.l{left:42px}.eye.r{right:42px}
+@keyframes blink{
+  0%,44%,48%,100%{transform:scaleY(1)}
+  45%,47%{transform:scaleY(.08)}
+}
+.mouth{
+  top:78px;left:55px;width:20px;height:10px;
+  border-bottom:3px solid #26334a;border-radius:50%;
+  transition:.15s;
+}
+.antenna{
+  width:5px;height:30px;top:1px;left:64px;background:#46647d;
+  transform-origin:bottom;
+  animation:antennaWiggle 2.8s ease-in-out infinite;
+}
+.antenna:after{
+  width:17px;height:17px;background:#ffe47f;border:3px solid #46647d;
+  box-shadow:0 0 12px #ffe47f99;
+  animation:antennaPulse 1.8s ease-in-out infinite;
+}
+@keyframes antennaWiggle{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes antennaPulse{0%,100%{box-shadow:0 0 8px #ffe47f88}50%{box-shadow:0 0 20px #ffe47fcc}}
+.foot{
+  bottom:7px;width:34px;height:15px;
+  background:linear-gradient(#b9e7ff,#80c9ef);
+  border:4px solid #46647d;
+}
+.foot.l{left:25px}.foot.r{right:25px}
+.arm{
+  position:absolute;top:73px;width:29px;height:12px;
+  background:#9edcff;border:4px solid #46647d;border-radius:999px;
+  z-index:-1;
+}
+.arm.l{left:2px;transform:rotate(18deg)}
+.arm.r{right:2px;transform:rotate(-18deg)}
+.pixel{
+  position:absolute;width:7px;height:7px;background:#ffffffcc;border-radius:2px;
+  opacity:0;pointer-events:none;
+}
+.pixel.p1{left:8px;top:35px}.pixel.p2{right:5px;top:22px}.pixel.p3{right:16px;bottom:23px}
+#bit.happy .mouth{height:14px;border-bottom-width:4px;transform:scaleX(1.15)}
+#bit.happy .cheek{background:#ff9fb8cc}
+#bit.happy .antenna:after{background:#fff09a}
+#bit.eating{animation:eatBounce .45s ease-in-out 3}
+#bit.eating .mouth{border:0;background:#26334a;width:15px;height:15px;border-radius:50%;left:58px}
+@keyframes eatBounce{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-55%) scale(1.08,.96)}
+}
+#bit.syncing .antenna:after{animation:syncPulse .35s ease-in-out 5}
+#bit.syncing .pixel{animation:pixelPop .9s ease-out forwards}
+#bit.syncing .p2{animation-delay:.15s}
+#bit.syncing .p3{animation-delay:.3s}
+@keyframes syncPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+@keyframes pixelPop{
+  0%{opacity:0;transform:translateY(8px) scale(.5)}
+  40%{opacity:1}
+  100%{opacity:0;transform:translateY(-18px) scale(1.3)}
+}
+#bit.playing .arm.l{animation:waveL .35s alternate 6}
+#bit.playing .arm.r{animation:waveR .35s alternate 6}
+@keyframes waveL{from{transform:rotate(18deg)}to{transform:rotate(-28deg)}}
+@keyframes waveR{from{transform:rotate(-18deg)}to{transform:rotate(28deg)}}
+.shadow{
+  position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);
+  width:74px;height:16px;border-radius:50%;background:#5f8ca51d;
+  animation:shadowPulse 2.4s ease-in-out infinite;
+}
+@keyframes shadowPulse{0%,100%{transform:translateX(-50%) scaleX(1)}50%{transform:translateX(-50%) scaleX(.82)}}
+
+#bubble{
+  top:13%;
+  background:#ffffffee;
+  border:2px solid #a9d1ec;
+  box-shadow:0 7px 18px #698da92b;
+  transition:.2s;
+}
+#bubble:after{
+  content:"";position:absolute;left:50%;bottom:-8px;width:12px;height:12px;
+  background:white;border-right:2px solid #a9d1ec;border-bottom:2px solid #a9d1ec;
+  transform:translateX(-50%) rotate(45deg);
+}
+#event{
+  bottom:18px;left:32px;right:32px;
+  background:#ffffff88;border:1px solid #c5dfef;
+  padding:8px 10px;border-radius:14px;
+  backdrop-filter:blur(5px);
+}
+header{
+  background:linear-gradient(180deg,#ffffff99,transparent);
+}
+.name:before{content:"● ";color:#70c8a4;font-size:12px}
+nav button{
+  transition:.12s ease;
+}
+nav button:hover{transform:translateY(-2px)}
+
 </style>
 </head>
 <body>
@@ -58,9 +222,15 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #b9d8ee}
  <div id="bubble">010...?</div>
  <div id="ball"></div>
  <div id="bit" aria-label="BIT">
-  <div class="antenna"></div><div class="body"></div>
-  <div class="eye l"></div><div class="eye r"></div><div class="mouth"></div>
+  <div class="shadow"></div>
+  <div class="antenna"></div>
+  <div class="arm l"></div><div class="arm r"></div>
+  <div class="body"></div><div class="coreGlow"></div>
+  <div class="eye l"></div><div class="eye r"></div>
+  <div class="cheek l"></div><div class="cheek r"></div>
+  <div class="mouth"></div>
   <div class="foot l"></div><div class="foot r"></div>
+  <div class="pixel p1"></div><div class="pixel p2"></div><div class="pixel p3"></div>
  </div>
  <div id="event">BIT가 신호를 관찰하고 있다.</div>
 </div>
@@ -83,6 +253,14 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #b9d8ee}
   </div>
 </div>
 
+
+<div class="guideMask" id="guideMask">
+  <div class="guideText" id="guideText">
+    BIT에게 데이터를 먹여보세요.
+    <span class="guideArrow">↓</span>
+  </div>
+</div>
+
 <div class="modal" id="modal"><div class="sheet"><h3 id="mtitle"></h3><p id="mdesc"></p><div class="options" id="options"></div><button class="close" onclick="closeModal()">CLOSE</button></div></div>
 </div>
 <script>
@@ -93,6 +271,13 @@ function save(){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));re
 function dots(n){return "●".repeat(Math.max(0,n))+"○".repeat(Math.max(0,5-n))}
 function render(){food.textContent=dots(s.food);signal.textContent=dots(s.signal);energy.textContent=dots(s.energy);day.textContent=String(Math.floor((Date.now()-s.born)/86400000)+1).padStart(2,"0")}
 function say(t,e){bubble.textContent=t; if(e) eventEl.textContent=e; clearTimeout(window.bt);window.bt=setTimeout(()=>bubble.textContent=["010...?","♪","...","PING!"][Math.floor(Math.random()*4)],2600)}
+function emote(cls,ms=1100){
+  bit.classList.remove("happy","eating","syncing","playing");
+  void bit.offsetWidth;
+  bit.classList.add(cls);
+  clearTimeout(window.et);
+  window.et=setTimeout(()=>bit.classList.remove(cls),ms);
+}
 function wander(){let x=15+Math.random()*70,y=25+Math.random()*48;bit.style.left=x+"%";bit.style.top=y+"%"}
 setInterval(wander,3500);wander();
 function closeModal(){modal.style.display="none"}
@@ -100,13 +285,50 @@ function sheet(title,desc,items){mtitle.textContent=title;mdesc.textContent=desc
 function openFeed(){sheet("FEED DATA","BIT에게 어떤 데이터를 전송할까?",[
  ["🎮<br>PLAY.dat",()=>feed("PLAY.dat","ACT")],["♡<br>HEART.dat",()=>feed("HEART.dat","LINK")],["▦<br>INFO.dat",()=>feed("INFO.dat","LOGIC")]
 ])}
-function feed(name,type){s.food=Math.min(5,s.food+1);s.energy=Math.min(5,s.energy+1);s[type.toLowerCase()]++;closeModal();say("냠!","BIT가 "+name+"를 흡수했다. "+type+" 데이터가 축적됐다.");bounce();save()}
+function feed(name,type){s.food=Math.min(5,s.food+1);s.energy=Math.min(5,s.energy+1);s[type.toLowerCase()]++;closeModal();say("냠냠!","BIT가 "+name+"를 맛있게 흡수했다. "+type+" 데이터가 축적됐다.");emote("eating",1500);save();advanceGuide(0)}
 function bounce(){bit.animate([{transform:"translate(-50%,-50%) scale(1)"},{transform:"translate(-50%,-58%) scale(1.08)"},{transform:"translate(-50%,-50%) scale(1)"}],{duration:500})}
-function play(){if(s.energy<=0){say("...zzz","에너지가 부족한 것 같다.");return} ball.style.display="block";let count=0; say("♪!","DATA BALL을 발견했다."); let timer=setInterval(()=>{ball.style.left=(10+Math.random()*78)+"%";ball.style.top=(30+Math.random()*55)+"%";bit.style.left=ball.style.left;bit.style.top=ball.style.top;if(++count>=5){clearInterval(timer);setTimeout(()=>ball.style.display="none",600);s.energy--;s.signal=Math.min(5,s.signal+1);s.act++;say("♪♪!","신나게 놀았다. ACT 데이터 +1");save()}},650)}
+function play(){if(s.energy<=0){say("...zzz","에너지가 부족한 것 같다.");return} ball.style.display="block";let count=0; say("♪!","DATA BALL을 발견했다.");emote("playing",2600); let timer=setInterval(()=>{ball.style.left=(10+Math.random()*78)+"%";ball.style.top=(30+Math.random()*55)+"%";bit.style.left=ball.style.left;bit.style.top=ball.style.top;if(++count>=5){clearInterval(timer);setTimeout(()=>ball.style.display="none",600);s.energy--;s.signal=Math.min(5,s.signal+1);s.act++;say("♪♪!","신나게 놀았다. ACT 데이터 +1");emote("happy",1200);save();advanceGuide(1)}},650)}
 function openSync(){sheet("INCOMING PACKET","BIT > ...?  어떤 신호를 보낼까?",[
  ["♡<br>HEART",()=>sync("♡","link")],["♪<br>MUSIC",()=>sync("♪","act")],["?<br>QUERY",()=>sync("?","logic")]
 ])}
-function sync(symbol,type){s.signal=Math.min(5,s.signal+1);s[type]++;closeModal();say("..."+symbol+"!","BIT가 "+symbol+" 신호를 기억했다. "+type.toUpperCase()+" 데이터 +1");bounce();save()}
+function sync(symbol,type){s.signal=Math.min(5,s.signal+1);s[type]++;closeModal();say("..."+symbol+"!","BIT가 "+symbol+" 신호를 기억했다. "+type.toUpperCase()+" 데이터 +1");emote("syncing",1700);save();advanceGuide(2)}
+
+
+// guided first-play tutorial
+let guideStep = Number(localStorage.getItem("bit_guide_step") || 0); // 0 feed, 1 play, 2 sync, 3 done
+function showGuide(){
+  if(guideStep>=3){
+    guideMask.style.display="none";
+    document.querySelector("nav").className="";
+    return;
+  }
+  guideMask.style.display="block";
+  const nav=document.querySelector("nav");
+  nav.className="";
+  if(guideStep===0){
+    nav.classList.add("guide-feed");
+    guideText.innerHTML='먼저 <b>FEED</b>를 눌러 BIT에게 데이터를 먹여보세요.<span class="guideArrow">↓</span>';
+  }else if(guideStep===1){
+    nav.classList.add("guide-play");
+    guideText.innerHTML='좋아요! 이번에는 <b>PLAY</b>로 같이 놀아보세요.<span class="guideArrow">↓</span>';
+  }else if(guideStep===2){
+    nav.classList.add("guide-sync");
+    guideText.innerHTML='마지막으로 <b>SYNC</b>에서 신호를 하나 보내보세요.<span class="guideArrow">↓</span>';
+  }
+}
+function advanceGuide(expected){
+  if(guideStep!==expected) return;
+  guideStep++;
+  localStorage.setItem("bit_guide_step", String(guideStep));
+  if(guideStep>=3){
+    guideMask.style.display="none";
+    document.querySelector("nav").className="";
+    say("LINK OK!","기본 연결이 완료됐다. 이제 자유롭게 BIT와 지내보세요.");
+    setTimeout(()=>showHint("오른쪽 위 ? 버튼에서 도움말을 다시 볼 수 있어요."),1200);
+  }else{
+    setTimeout(showGuide,500);
+  }
+}
 
 // onboarding / help
 const tutorialPages = [
@@ -126,7 +348,6 @@ function drawTutorial(){
 }
 function startTutorial(force=false){
   tutorialIndex=0; drawTutorial(); tutorial.style.display="grid";
-  if(force) localStorage.setItem("bit_help_seen","1");
 }
 function nextTutorial(){
   if(tutorialIndex<tutorialPages.length-1){tutorialIndex++;drawTutorial()}
@@ -134,26 +355,51 @@ function nextTutorial(){
 }
 function closeTutorial(){
   tutorial.style.display="none";
-  localStorage.setItem("bit_help_seen","1");
-  showHint("아래 FEED · PLAY · SYNC를 눌러 BIT와 상호작용해 보세요.");
+  if(guideStep<3) showGuide();
+  else showHint("아래 FEED · PLAY · SYNC를 눌러 BIT와 상호작용해 보세요.");
 }
 function showHint(t){
   hint.textContent=t; hint.style.display="block";
   clearTimeout(window.ht); window.ht=setTimeout(()=>hint.style.display="none",4200);
 }
 
+
+setInterval(()=>{
+  if(document.hidden || modal.style.display==="grid" || tutorial.style.display==="grid") return;
+  if(Math.random()<0.4){
+    const idle=[
+      ["♪","혼자 작은 신호를 흥얼거린다."],
+      ["...","무언가 생각하는 것 같다."],
+      ["PING?","주변 신호를 탐색하고 있다."],
+      ["(•ᴗ•)","당신 쪽을 힐끔 바라본다."]
+    ][Math.floor(Math.random()*4)];
+    say(idle[0],idle[1]);
+  }
+},11000);
+
 // offline simulation
 let stored=JSON.parse(localStorage.getItem(KEY)||"null");
 if(stored){let hrs=(Date.now()-stored.last)/3600000;if(hrs>=1){let found=Math.min(3,Math.floor(hrs/2));eventEl.textContent=`OFFLINE LOG · 약 ${Math.floor(hrs)}시간 동안 혼자 활동했다${found?` · DATA 조각 ${found}개 발견`:""}.`;s.food=Math.max(1,s.food-Math.floor(hrs/8));s.energy=Math.min(5,s.energy+Math.floor(hrs/3));}}
 render();save();
 
-if(!localStorage.getItem("bit_help_seen")){
-  setTimeout(()=>startTutorial(false),350);
+const tapLines=[
+  ["PING!","BIT가 당신을 발견했다."],
+  ["(•ᴗ•)","BIT가 화면 너머를 바라본다."],
+  ["♪","작은 신호음이 들렸다."],
+  ["...♡","BIT가 희미한 하트 패킷을 보냈다."]
+];
+let tapIndex=0;
+bit.addEventListener("click",()=>{
+  const x=tapLines[tapIndex++%tapLines.length];
+  say(x[0],x[1]); emote("happy",850);
+});
+
+
+if(guideStep < 3){
+  setTimeout(showGuide,650);
 }else{
   setTimeout(()=>showHint("FEED · PLAY · SYNC 중 하나를 눌러 보세요."),700);
 }
-bit.addEventListener("click",()=>say("PING!","BIT가 당신의 접속을 감지했다."));
-
 </script>
 </body>
 </html>
