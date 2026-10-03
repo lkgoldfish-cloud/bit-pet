@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>BIT Prototype v0.1</title>
+<style>
+:root{--bg:#eef7ff;--panel:#ffffffcc;--ink:#26334a;--line:#b8d5ef;--accent:#76b8ef}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#dceeff;font-family:ui-rounded,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:var(--ink);display:grid;place-items:center;min-height:100vh}
+#game{width:min(100vw,430px);height:100dvh;max-height:900px;background:linear-gradient(#eff9ff,#e9f4ff 60%,#dff0fb);position:relative;overflow:hidden;border-left:1px solid #c9e0f2;border-right:1px solid #c9e0f2}
+header{height:82px;padding:18px 18px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.name{font-weight:800;font-size:18px}.sub{font-size:11px;opacity:.65;margin-top:3px}.bars{font-size:12px;text-align:right;line-height:1.55}
+#world{position:absolute;top:82px;bottom:126px;left:0;right:0;overflow:hidden}
+.grid{position:absolute;inset:0;opacity:.18;background-image:linear-gradient(#8fc0e8 1px,transparent 1px),linear-gradient(90deg,#8fc0e8 1px,transparent 1px);background-size:28px 28px}
+#bit{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:110px;height:110px;transition:left 2.2s ease-in-out,top 1.7s ease-in-out;filter:drop-shadow(0 8px 8px #87aeca44)}
+.body{position:absolute;inset:13px;background:#b9e6ff;border:4px solid #46647d;border-radius:48% 48% 44% 44%;box-shadow:inset 0 -10px #92d3f8}
+.eye{position:absolute;top:43px;width:9px;height:13px;background:#26334a;border-radius:50%}.eye.l{left:39px}.eye.r{right:39px}
+.mouth{position:absolute;top:63px;left:48px;width:15px;height:8px;border-bottom:3px solid #26334a;border-radius:50%}
+.antenna{position:absolute;width:5px;height:26px;background:#46647d;top:0;left:53px;border-radius:5px}.antenna:after{content:"";position:absolute;width:15px;height:15px;background:#ffd974;border:3px solid #46647d;border-radius:50%;left:-5px;top:-7px}
+.foot{position:absolute;bottom:2px;width:30px;height:14px;background:#8fcff4;border:4px solid #46647d;border-radius:50%}.foot.l{left:20px}.foot.r{right:20px}
+#bubble{position:absolute;left:50%;top:18%;transform:translateX(-50%);background:#fff;border:2px solid var(--line);padding:9px 14px;border-radius:16px;font-size:14px;min-width:90px;text-align:center;box-shadow:0 4px 12px #7799aa22}
+#event{position:absolute;left:18px;right:18px;bottom:16px;text-align:center;font-size:12px;opacity:.7}
+nav{position:absolute;bottom:0;left:0;right:0;height:126px;background:var(--panel);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
+button{border:2px solid #b9d8ee;background:#fff;border-radius:18px;font-weight:800;color:#31516c;font-size:14px;box-shadow:0 4px 0 #b9d8ee;cursor:pointer}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #b9d8ee}
+.modal{position:absolute;inset:0;background:#31516c55;display:none;place-items:end center;z-index:10}
+.sheet{width:100%;background:#f8fcff;border-radius:25px 25px 0 0;padding:22px 18px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px #31516c22}
+.sheet h3{margin:0 0 8px}.sheet p{font-size:13px;opacity:.7;margin:0 0 16px}
+.options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.options button{height:70px;font-size:13px}
+.close{margin-top:16px;width:100%;height:45px}
+#ball{display:none;position:absolute;width:42px;height:42px;border-radius:50%;background:#ffd974;border:4px solid #46647d;left:20%;top:65%;transition:left .5s,top .5s;z-index:3}
+.small{font-size:10px;opacity:.6}
+</style>
+</head>
+<body>
+<div id="game">
+<header>
+ <div><div class="name">BIT_01</div><div class="sub">DIGITAL LIFEFORM · DAY <span id="day">01</span></div></div>
+ <div class="bars">DATA <span id="food">●●●●○</span><br>SIGNAL <span id="signal">●●●○○</span><br>ENERGY <span id="energy">●●●●○</span></div>
+</header>
+<div id="world">
+ <div class="grid"></div>
+ <div id="bubble">010...?</div>
+ <div id="ball"></div>
+ <div id="bit" aria-label="BIT">
+  <div class="antenna"></div><div class="body"></div>
+  <div class="eye l"></div><div class="eye r"></div><div class="mouth"></div>
+  <div class="foot l"></div><div class="foot r"></div>
+ </div>
+ <div id="event">BIT가 신호를 관찰하고 있다.</div>
+</div>
+<nav><button onclick="openFeed()">FEED<br><span class="small">DATA</span></button><button onclick="play()">PLAY<br><span class="small">DATA BALL</span></button><button onclick="openSync()">SYNC<br><span class="small">LINK</span></button></nav>
+
+<div class="modal" id="modal"><div class="sheet"><h3 id="mtitle"></h3><p id="mdesc"></p><div class="options" id="options"></div><button class="close" onclick="closeModal()">CLOSE</button></div></div>
+</div>
+<script>
+const KEY="bit_proto_v01";
+let s=JSON.parse(localStorage.getItem(KEY)||"null")||{food:4,signal:3,energy:4,act:0,link:0,logic:0,last:Date.now(),born:Date.now()};
+const bit=document.querySelector("#bit"), bubble=document.querySelector("#bubble"), eventEl=document.querySelector("#event"), ball=document.querySelector("#ball");
+function save(){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));render()}
+function dots(n){return "●".repeat(Math.max(0,n))+"○".repeat(Math.max(0,5-n))}
+function render(){food.textContent=dots(s.food);signal.textContent=dots(s.signal);energy.textContent=dots(s.energy);day.textContent=String(Math.floor((Date.now()-s.born)/86400000)+1).padStart(2,"0")}
+function say(t,e){bubble.textContent=t; if(e) eventEl.textContent=e; clearTimeout(window.bt);window.bt=setTimeout(()=>bubble.textContent=["010...?","♪","...","PING!"][Math.floor(Math.random()*4)],2600)}
+function wander(){let x=15+Math.random()*70,y=25+Math.random()*48;bit.style.left=x+"%";bit.style.top=y+"%"}
+setInterval(wander,3500);wander();
+function closeModal(){modal.style.display="none"}
+function sheet(title,desc,items){mtitle.textContent=title;mdesc.textContent=desc;options.innerHTML="";items.forEach(i=>{let b=document.createElement("button");b.innerHTML=i[0];b.onclick=i[1];options.appendChild(b)});modal.style.display="grid"}
+function openFeed(){sheet("FEED DATA","BIT에게 어떤 데이터를 전송할까?",[
+ ["🎮<br>PLAY.dat",()=>feed("PLAY.dat","ACT")],["♡<br>HEART.dat",()=>feed("HEART.dat","LINK")],["▦<br>INFO.dat",()=>feed("INFO.dat","LOGIC")]
+])}
+function feed(name,type){s.food=Math.min(5,s.food+1);s.energy=Math.min(5,s.energy+1);s[type.toLowerCase()]++;closeModal();say("냠!","BIT가 "+name+"를 흡수했다. "+type+" 데이터가 축적됐다.");bounce();save()}
+function bounce(){bit.animate([{transform:"translate(-50%,-50%) scale(1)"},{transform:"translate(-50%,-58%) scale(1.08)"},{transform:"translate(-50%,-50%) scale(1)"}],{duration:500})}
+function play(){if(s.energy<=0){say("...zzz","에너지가 부족한 것 같다.");return} ball.style.display="block";let count=0; say("♪!","DATA BALL을 발견했다."); let timer=setInterval(()=>{ball.style.left=(10+Math.random()*78)+"%";ball.style.top=(30+Math.random()*55)+"%";bit.style.left=ball.style.left;bit.style.top=ball.style.top;if(++count>=5){clearInterval(timer);setTimeout(()=>ball.style.display="none",600);s.energy--;s.signal=Math.min(5,s.signal+1);s.act++;say("♪♪!","신나게 놀았다. ACT 데이터 +1");save()}},650)}
+function openSync(){sheet("INCOMING PACKET","BIT > ...?  어떤 신호를 보낼까?",[
+ ["♡<br>HEART",()=>sync("♡","link")],["♪<br>MUSIC",()=>sync("♪","act")],["?<br>QUERY",()=>sync("?","logic")]
+])}
+function sync(symbol,type){s.signal=Math.min(5,s.signal+1);s[type]++;closeModal();say("..."+symbol+"!","BIT가 "+symbol+" 신호를 기억했다. "+type.toUpperCase()+" 데이터 +1");bounce();save()}
+// offline simulation
+let stored=JSON.parse(localStorage.getItem(KEY)||"null");
+if(stored){let hrs=(Date.now()-stored.last)/3600000;if(hrs>=1){let found=Math.min(3,Math.floor(hrs/2));eventEl.textContent=`OFFLINE LOG · 약 ${Math.floor(hrs)}시간 동안 혼자 활동했다${found?` · DATA 조각 ${found}개 발견`:""}.`;s.food=Math.max(1,s.food-Math.floor(hrs/8));s.energy=Math.min(5,s.energy+Math.floor(hrs/3));}}
+render();save();
+</script>
+</body>
+</html>
