@@ -32,6 +32,19 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #b9d8ee}
 .close{margin-top:16px;width:100%;height:45px}
 #ball{display:none;position:absolute;width:42px;height:42px;border-radius:50%;background:#ffd974;border:4px solid #46647d;left:20%;top:65%;transition:left .5s,top .5s;z-index:3}
 .small{font-size:10px;opacity:.6}
+
+.helpBtn{position:absolute;right:14px;top:88px;z-index:6;width:38px;height:38px;border-radius:50%;padding:0;font-size:17px;background:#fff;border:2px solid #b9d8ee;box-shadow:0 3px 0 #b9d8ee}
+.tutorial{position:absolute;inset:0;background:#26435dbf;z-index:30;display:none;place-items:center;padding:24px}
+.tutorialCard{width:min(100%,360px);background:#f9fdff;border-radius:26px;padding:26px 22px 20px;text-align:center;box-shadow:0 18px 60px #18324666}
+.tutorialIcon{font-size:54px;margin-bottom:8px}
+.tutorialCard h2{margin:4px 0 10px;font-size:22px}
+.tutorialCard p{font-size:14px;line-height:1.65;margin:0 0 18px;color:#49627a}
+.tutorialDots{font-size:12px;letter-spacing:5px;color:#8aa9c0;margin-bottom:15px}
+.tutorialActions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tutorialActions button{height:48px}
+.primary{background:#dff3ff!important}
+.hint{position:absolute;bottom:132px;left:50%;transform:translateX(-50%);z-index:8;background:#fff;border:1px solid #c8dfef;border-radius:18px;padding:8px 13px;font-size:11px;box-shadow:0 5px 16px #54738c22;white-space:nowrap;display:none}
+
 </style>
 </head>
 <body>
@@ -51,7 +64,24 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #b9d8ee}
  </div>
  <div id="event">BIT가 신호를 관찰하고 있다.</div>
 </div>
-<nav><button onclick="openFeed()">FEED<br><span class="small">DATA</span></button><button onclick="play()">PLAY<br><span class="small">DATA BALL</span></button><button onclick="openSync()">SYNC<br><span class="small">LINK</span></button></nav>
+<nav><button onclick="openFeed()">FEED<br><span class="small">데이터 먹이기</span></button><button onclick="play()">PLAY<br><span class="small">같이 놀기</span></button><button onclick="openSync()">SYNC<br><span class="small">신호 교감</span></button></nav>
+
+
+<button class="helpBtn" onclick="startTutorial(true)" aria-label="도움말">?</button>
+<div class="hint" id="hint"></div>
+
+<div class="tutorial" id="tutorial">
+  <div class="tutorialCard">
+    <div class="tutorialIcon" id="tutorialIcon">◈</div>
+    <h2 id="tutorialTitle">BIT에 오신 것을 환영합니다</h2>
+    <p id="tutorialText"></p>
+    <div class="tutorialDots" id="tutorialDots">● ○ ○ ○</div>
+    <div class="tutorialActions">
+      <button onclick="closeTutorial()">건너뛰기</button>
+      <button class="primary" id="tutorialNext" onclick="nextTutorial()">다음</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="modal"><div class="sheet"><h3 id="mtitle"></h3><p id="mdesc"></p><div class="options" id="options"></div><button class="close" onclick="closeModal()">CLOSE</button></div></div>
 </div>
@@ -77,10 +107,53 @@ function openSync(){sheet("INCOMING PACKET","BIT > ...?  어떤 신호를 보낼
  ["♡<br>HEART",()=>sync("♡","link")],["♪<br>MUSIC",()=>sync("♪","act")],["?<br>QUERY",()=>sync("?","logic")]
 ])}
 function sync(symbol,type){s.signal=Math.min(5,s.signal+1);s[type]++;closeModal();say("..."+symbol+"!","BIT가 "+symbol+" 신호를 기억했다. "+type.toUpperCase()+" 데이터 +1");bounce();save()}
+
+// onboarding / help
+const tutorialPages = [
+ {icon:"◈", title:"작은 디지털 생명체, BIT", text:"BIT는 앱을 보고 있지 않을 때도 혼자 생활합니다. 자주 확인하고, 먹이고, 놀고, 신호를 주고받으며 성장시켜 보세요."},
+ {icon:"▣", title:"FEED · 데이터를 먹여요", text:"PLAY.dat, HEART.dat, INFO.dat 같은 데이터를 먹이면 상태가 회복되고 성향이 쌓입니다. 어떤 데이터를 주느냐가 나중의 성장에 영향을 줍니다."},
+ {icon:"◉", title:"PLAY · 같이 놀아요", text:"DATA BALL로 짧게 놀 수 있습니다. 놀이는 에너지를 쓰지만 SIGNAL과 ACT 성향을 올려 줍니다."},
+ {icon:"⌁", title:"SYNC · 신호로 교감해요", text:"BIT가 보내는 신호에 ♡, ♪, ?로 응답하세요. 정답은 없습니다. 당신이 어떤 신호를 자주 보내는지가 BIT의 성격이 됩니다."}
+];
+let tutorialIndex = 0;
+function drawTutorial(){
+  const p=tutorialPages[tutorialIndex];
+  tutorialIcon.textContent=p.icon;
+  tutorialTitle.textContent=p.title;
+  tutorialText.textContent=p.text;
+  tutorialDots.textContent=tutorialPages.map((_,i)=>i===tutorialIndex?"●":"○").join(" ");
+  tutorialNext.textContent=tutorialIndex===tutorialPages.length-1?"시작하기":"다음";
+}
+function startTutorial(force=false){
+  tutorialIndex=0; drawTutorial(); tutorial.style.display="grid";
+  if(force) localStorage.setItem("bit_help_seen","1");
+}
+function nextTutorial(){
+  if(tutorialIndex<tutorialPages.length-1){tutorialIndex++;drawTutorial()}
+  else closeTutorial();
+}
+function closeTutorial(){
+  tutorial.style.display="none";
+  localStorage.setItem("bit_help_seen","1");
+  showHint("아래 FEED · PLAY · SYNC를 눌러 BIT와 상호작용해 보세요.");
+}
+function showHint(t){
+  hint.textContent=t; hint.style.display="block";
+  clearTimeout(window.ht); window.ht=setTimeout(()=>hint.style.display="none",4200);
+}
+
 // offline simulation
 let stored=JSON.parse(localStorage.getItem(KEY)||"null");
 if(stored){let hrs=(Date.now()-stored.last)/3600000;if(hrs>=1){let found=Math.min(3,Math.floor(hrs/2));eventEl.textContent=`OFFLINE LOG · 약 ${Math.floor(hrs)}시간 동안 혼자 활동했다${found?` · DATA 조각 ${found}개 발견`:""}.`;s.food=Math.max(1,s.food-Math.floor(hrs/8));s.energy=Math.min(5,s.energy+Math.floor(hrs/3));}}
 render();save();
+
+if(!localStorage.getItem("bit_help_seen")){
+  setTimeout(()=>startTutorial(false),350);
+}else{
+  setTimeout(()=>showHint("FEED · PLAY · SYNC 중 하나를 눌러 보세요."),700);
+}
+bit.addEventListener("click",()=>say("PING!","BIT가 당신의 접속을 감지했다."));
+
 </script>
 </body>
 </html>
